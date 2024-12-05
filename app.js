@@ -1,86 +1,100 @@
-document.getElementById('cveForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+function generateUrls() {
+    const input = document.getElementById('cveInput').value.trim();
+    const errorElement = document.getElementById('error');
+    const resultElement = document.getElementById('result');
 
-    // Get the CVE number entered by the user
-    let cveNumber = document.getElementById('cveNumber').value.trim();
+    // Clear previous messages
+    errorElement.textContent = '';
+    resultElement.innerHTML = '';
 
-    // Validate and ensure the CVE number has "CVE-" at the start
-    if (!/^(CVE-?\d{4}-\d{4,7})$/.test(cveNumber)) {
-        document.querySelector('.error').textContent = 'Please enter a valid CVE number (e.g., CVE-2024-38829).';
+    // Adjust input if it starts without "CVE-"
+    const cvePatternWithPrefix = /^CVE-\d{4}-\d{4,7}$/i;
+    const cvePatternWithoutPrefix = /^\d{4}-\d{4,7}$/;
+
+    let formattedInput;
+    if (cvePatternWithPrefix.test(input)) {
+        formattedInput = input; // Already valid
+    } else if (cvePatternWithoutPrefix.test(input)) {
+        formattedInput = `CVE-${input}`; // Add "CVE-" prefix
+    } else {
+        errorElement.textContent = 'Invalid CVE format. Use CVE-xxxx-xxxx or xxxx-xxxx.';
         return;
     }
 
-    // If the CVE number does not start with "CVE-", add it
-    if (!cveNumber.startsWith('CVE-')) {
-        cveNumber = 'CVE-' + cveNumber;
-    }
-
-    // Clear any previous error message
-    document.querySelector('.error').textContent = '';
-
-    // Define URLs for providers (NVD, RedHat, etc.)
-    const providers = [
-        {
-            name: 'NVD',
-            url: `https://nvd.nist.gov/vuln/detail/${cveNumber}`,
-            logo: 'images/logos/nvd.png'
+    // Generate URLs for different providers
+    const urls = [
+        { 
+            provider: 'NVD', 
+            logo: 'images/logos/nvd-logo.png', 
+            url: `https://nvd.nist.gov/vuln/detail/${formattedInput}` 
         },
-        {
-            name: 'RedHat',
-            url: `https://access.redhat.com/security/cve/${cveNumber}`,
-            logo: 'images/logos/redhat.png'
+        { 
+            provider: 'Red Hat', 
+            logo: 'images/logos/redhat-logo.png', 
+            url: `https://access.redhat.com/security/cve/${formattedInput}` 
         },
-        {
-            name: 'SecurityFocus',
-            url: `https://www.securityfocus.com/bid/${cveNumber}`,
-            logo: 'images/logos/securityfocus.png'
+        { 
+            provider: 'MITRE', 
+            logo: 'images/logos/mitre-logo.png', 
+            url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${formattedInput}` 
         },
-        {
-            name: 'MITRE',
-            url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${cveNumber}`,
-            logo: 'images/logos/mitre.png'
+        { 
+            provider: 'VulDB', 
+            logo: 'images/logos/vuldb-logo.png', 
+            url: `https://vuldb.com/?id=${formattedInput}` 
         },
-        {
-            name: 'OSVDB',
-            url: `https://osvdb.org/CVE-${cveNumber.replace('CVE-', '')}`,
-            logo: 'images/logos/osvdb.png'
-        }
+        { 
+            provider: 'Exploit-DB', 
+            logo: 'images/logos/exploitdb-logo.png', 
+            url: `https://www.exploit-db.com/exploits/${formattedInput}` 
+        },
+        { 
+            provider: 'Snyk', 
+            logo: 'images/logos/snyk-logo.png', 
+            url: `https://snyk.io/vuln/${formattedInput}` 
+        },
+        { 
+            provider: 'Qualys', 
+            logo: 'images/logos/qualys-logo.png', 
+            url: `https://www.qualys.com/` 
+        },
     ];
 
-    // Display provider results
-    let resultHTML = '';
-    providers.forEach(provider => {
-        resultHTML += `
-            <table>
-                <thead>
+    // Display the result
+    resultElement.innerHTML = `
+        <p><strong>Links for ${formattedInput}:</strong></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Provider</th>
+                    <th>Logo</th>
+                    <th>URL</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${urls.map(url => `
                     <tr>
-                        <th>Provider</th>
-                        <th>URL</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><img src="${provider.logo}" alt="${provider.name} logo"> ${provider.name}</td>
-                        <td><a href="${provider.url}" target="_blank">${provider.url}</a></td>
+                        <td>${url.provider}</td>
+                        <td><img src="${url.logo}" alt="${url.provider} logo" width="50"></td>
+                        <td><a href="${url.url}" target="_blank">${url.url}</a></td>
                         <td>
-                            <button onclick="copyToClipboard('${provider.url}')">Copy</button>
-                            <button onclick="window.open('${provider.url}', '_blank')">Open</button>
+                            <button onclick="copyToClipboard('${url.url}')">Copy</button>
+                            <button onclick="openInNewWindow('${url.url}')">Open</button>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        `;
-    });
-
-    // Insert the resultHTML into the results div
-    document.querySelector('.result').innerHTML = resultHTML;
-});
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        alert("Copied to clipboard!");
-    }, function(err) {
-        console.error("Could not copy text: ", err);
+    navigator.clipboard.writeText(text).catch(err => {
+        console.error('Failed to copy: ', err);
     });
+}
+
+function openInNewWindow(url) {
+    window.open(url, '_blank');
 }
