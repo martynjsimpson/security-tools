@@ -135,3 +135,18 @@ td button {
     display: inline-block; /* Ensure buttons stay side by side */
     margin-right: 10px; /* Add space between buttons */
 }
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer a {
+    text-decoration: none;
+    color: #007BFF; /* Match the link color used in the app */
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
