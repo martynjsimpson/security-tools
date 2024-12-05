@@ -27,7 +27,8 @@ function decodeCvssVector(vectorInput) {
         return;  // Don't proceed further if invalid
     }
 
-    // Strip out the "CVSS:3.1" or "CVSS:4.0" prefix and split the vector by "/"
+    // Extract the CVSS version and strip out the "CVSS:3.1" or "CVSS:4.0" prefix
+    const cvssVersion = vectorInput.match(/^CVSS:(\d+\.\d+)/i)[1];
     const vector = vectorInput.replace(/^CVSS:\d+\.\d+\//, '').split('/');
 
     const values = {
@@ -88,6 +89,10 @@ function decodeCvssVector(vectorInput) {
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td><strong>CVSS Version</strong></td>
+                        <td>${cvssVersion}</td>
+                    </tr>
                     ${Object.keys(decodedValues).map(key => `
                         <tr>
                             <td>${key}</td>
