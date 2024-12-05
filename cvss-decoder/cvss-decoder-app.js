@@ -50,7 +50,7 @@ function decodeCvssVector(vectorInput) {
     };
 
     const possibleValues = {
-        AV: { N: 'Network', L: 'Local', A: 'Adjacent Network' },
+        AV: { N: 'Network', A: 'Adjacent Network', L: 'Local', P: 'Physical' },
         AC: { H: 'High', L: 'Low' },
         PR: { N: 'None', L: 'Low', H: 'High' },
         UI: { N: 'None', R: 'Required' },
@@ -68,6 +68,30 @@ function decodeCvssVector(vectorInput) {
     };
 
     let decodedValues = {};
+
+    // Function to return color based on value for each metric
+    function getColor(metric, value) {
+        const colorMap = {
+            'Attack Vector': { Physical: 'green', Local: 'yellow', Adjacent: 'orange', Network: 'red' },
+            'Attack Complexity': { Low: 'green', High: 'red' },
+            'Privileges Required': { None: 'green', Low: 'yellow', High: 'red' },
+            'User Interaction': { None: 'green', Required: 'red' },
+            'Scope': { Unchanged: 'green', Changed: 'red' },
+            'Confidentiality': { None: 'green', Low: 'yellow', High: 'red' },
+            'Integrity': { None: 'green', Low: 'yellow', High: 'red' },
+            'Availability': { None: 'green', Low: 'yellow', High: 'red' },
+            'Attack Target': { None: 'green', Targeted: 'red' },
+            'Vulnerability Complexity': { None: 'green', Low: 'yellow', High: 'red' },
+            'Vulnerability Impact': { None: 'green', Low: 'yellow', High: 'red' },
+            'Vulnerability Availability': { None: 'green', Low: 'yellow', High: 'red' },
+            'Scope Impact': { None: 'green', Critical: 'red', Low: 'yellow' },
+            'Security Impact': { None: 'green', Low: 'yellow', High: 'red' },
+            'Severity': { None: 'green', Low: 'yellow', High: 'red' }
+        };        
+
+        // Check if the value exists in the color map, otherwise default to 'black'
+        return colorMap[metric] && colorMap[metric][value] ? colorMap[metric][value] : 'black';
+    }
 
     // Parse each vector metric and decode the corresponding value
     vector.forEach(item => {
@@ -93,12 +117,16 @@ function decodeCvssVector(vectorInput) {
                         <td><strong>CVSS Version</strong></td>
                         <td>${cvssVersion}</td>
                     </tr>
-                    ${Object.keys(decodedValues).map(key => `
-                        <tr>
-                            <td>${key}</td>
-                            <td>${decodedValues[key]}</td>
-                        </tr>
-                    `).join('')}
+                    ${Object.keys(decodedValues).map(key => {
+                        const value = decodedValues[key];
+                        const color = getColor(key, value);  // Get the color based on value
+                        return `
+                            <tr>
+                                <td>${key}</td>
+                                <td style="color: ${color}">${value}</td>
+                            </tr>
+                        `;
+                    }).join('')}
                 </tbody>
             </table>
         `;
