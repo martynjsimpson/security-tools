@@ -88,13 +88,14 @@ Example of adding a new provider:
 
 ```javascript
 const urls = [
-    // Existing providers...
-    {
-        provider: 'New Provider',
-        logo: 'images/logos/newprovider-logo.png',
-        url: `https://newprovider.com/cve/${formattedInput}`
-    }
+  // Existing providers...
+  {
+    provider: "New Provider",
+    logo: "images/logos/newprovider-logo.png",
+    url: `https://newprovider.com/cve/${formattedInput}`,
+  },
 ];
+```
 
 ## Contributing
 
@@ -103,4 +104,3 @@ Feel free to submit pull requests or open issues for enhancements or bug fixes.
 ## License
 
 This project is open-source and available under the [GPL 3.0 License](LICENSE).
-```
