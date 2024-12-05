@@ -6,6 +6,8 @@ The **CVE Tool** is a simple web-based tool designed to help users quickly gener
 
 The tool also automatically adjusts the CVE number format if necessary (e.g., adding "CVE-" to an input like `2024-38829`), making it user-friendly for different CVE number formats.
 
+The tool is hosted on GitHub ages here https://martynjsimpson.github.io/cvss-tool/.
+
 ## Features
 
 - **CVE URL Generation**: Based on the input, the app generates and displays URLs for various CVE providers.
