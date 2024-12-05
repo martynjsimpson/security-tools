@@ -21,7 +21,7 @@ function generateUrls() {
         return;
     }
 
-    // Generate URLs for different providers
+    // Generate URLs for different providers (removed Qualys)
     const urls = [
         { 
             provider: 'NVD', 
@@ -52,11 +52,6 @@ function generateUrls() {
             provider: 'Snyk', 
             logo: 'images/logos/snyk-logo.png', 
             url: `https://snyk.io/vuln/${formattedInput}` 
-        },
-        { 
-            provider: 'Qualys', 
-            logo: 'images/logos/qualys-logo.png', 
-            url: `https://www.qualys.com/` 
         },
     ];
 
