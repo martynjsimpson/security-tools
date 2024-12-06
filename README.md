@@ -2,7 +2,7 @@
 
 This project provides a set of tools to help security professionals evaluate and interpret Common Vulnerability Scoring System (CVSS) scores, with a focus on CVSS vector decoding and evaluation.
 
-Project available here https://martynjsimpson.github.io/cvss-tool/
+Project available here https://martynjsimpson.github.io/security-tools/
 
 ## Features
 
